@@ -18,6 +18,9 @@ export class User {
     @Property({ type: String, nullable: false })
     password: string;
 
+    @Property({ type: String })
+    refreshToken: string;
+
     @Property({ type: String, nullable: false })
     companyName: string;
 }
