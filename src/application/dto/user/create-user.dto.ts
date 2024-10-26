@@ -1,22 +1,20 @@
 import {IsNotEmpty, IsString} from "class-validator";
-import {Type} from "class-transformer";
-import {Email} from "../../../domain/value-objects/email/email";
 import {PhoneNumber} from "../../../domain/value-objects/phone-number/phone-number";
 
 export class CreateUserDto {
     @IsString()
-    username: string;
+    readonly username: string;
 
-    @Type(() => Email)
-    email: Email;
+    @IsString()
+    readonly email: string;
 
-    @Type(() => PhoneNumber)
-    phoneNumber: PhoneNumber;
+    @IsString()
+    readonly phoneNumber: string;
 
     @IsString()
     @IsNotEmpty()
-    password: string;
+    readonly password: string;
 
     @IsString()
-    companyName: string;
+    readonly companyName: string;
 }

@@ -18,15 +18,12 @@ export class UserService {
     ) {}
 
     async findUserById(userId: string): Promise<User> {
-        const user = await this.userRepository
-            .createQueryBuilder("user")
-            .where({ id: userId })
-            .getSingleResult();
+        return this.findUserByField(userId, "id");
+    }
 
-        if (!user) {
-            throw new UserNotFoundException();
-        }
-        return user;
+    async findUserByEmail(email: Email): Promise<User> {
+        const emailValue = this.formatEmail(email.getEmail());
+        return this.findUserByField(emailValue, "email");
     }
 
     async findUsers(): Promise<Array<User>> {
@@ -35,8 +32,8 @@ export class UserService {
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         const { email, phoneNumber } = createUserDto;
-        const emailValue = this.formatEmail(email.getEmail());
-        const phoneNumberValue = this.formatPhoneNumber(phoneNumber.getPhoneNumber());
+        const emailValue = this.formatEmail(email);
+        const phoneNumberValue = this.formatPhoneNumber(phoneNumber);
 
         return await this.userRepository
             .createQueryBuilder("user")
@@ -66,15 +63,31 @@ export class UserService {
             .execute();
     }
 
+    async saveUser(user: User): Promise<User> {
+        return this.userRepository.save(user);
+    }
+
     async deleteUser(userId: string): Promise<void> {
         await this.userRepository.nativeDelete(userId);
     }
 
-    private formatEmail(email: string): string {
+    formatEmail(email: string): string {
         return new Email(email).getEmail();
     }
 
-    private formatPhoneNumber(phoneNumber: string): string {
+    formatPhoneNumber(phoneNumber: string): string {
         return new PhoneNumber(phoneNumber).getPhoneNumber();
+    }
+
+    private async findUserByField(value: string, field: keyof User): Promise<User> {
+        const user = await this.userRepository
+            .createQueryBuilder("user")
+            .where({ [field]: value })
+            .getSingleResult();
+
+        if (!user) {
+            throw new UserNotFoundException();
+        }
+        return user;
     }
 }

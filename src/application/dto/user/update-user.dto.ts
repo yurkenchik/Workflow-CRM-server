@@ -1,22 +1,28 @@
-import {IsNotEmpty, IsString} from "class-validator";
-import {Type} from "class-transformer";
+import {IsOptional, IsString} from "class-validator";
+import {Transform} from "class-transformer";
 import {Email} from "../../../domain/value-objects/email/email";
 import {PhoneNumber} from "../../../domain/value-objects/phone-number/phone-number";
 
 export class UpdateUserDto {
+    @IsOptional()
     @IsString()
     readonly username: string;
 
-    @Type(() => Email)
+    @IsOptional()
+    @Transform(({ value }) => new Email(value))
     readonly email: Email;
 
-    @Type(() => PhoneNumber)
+    @Transform(({ value }) => new Email(value))
     phoneNumber: PhoneNumber;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     readonly password: string;
 
+    @IsOptional()
+    refreshToken: string;
+
     @IsString()
+    @IsOptional()
     readonly companyName: string;
 }
