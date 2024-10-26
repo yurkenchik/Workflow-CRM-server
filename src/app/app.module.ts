@@ -7,6 +7,8 @@ import {UserModule} from "../modules/user.module";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import * as process from "node:process";
 import * as dotenv from 'dotenv';
+import {JwtModule} from "@nestjs/jwt";
+import {jwtConfig} from "../common/utils/jwt.config";
 dotenv.config();
 
 @Module({
@@ -20,7 +22,21 @@ dotenv.config();
             inject: [ConfigService],
             useFactory: getMikroOrmConfig
         }),
-        UserModule
+        UserModule,
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => {
+                const jwtConfigFactory = jwtConfig(configService);
+
+                return {
+                    secret: jwtConfigFactory.secretKey,
+                    signOptions: {
+                        expiresIn: jwtConfigFactory.signOptions.expiresIn
+                    }
+                };
+            }
+        })
     ],
     controllers: [AppController],
     providers: [AppService],
