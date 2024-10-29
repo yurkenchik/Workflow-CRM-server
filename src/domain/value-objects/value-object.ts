@@ -17,4 +17,8 @@ export class ValueObject<T> {
 
         return JSON.stringify(this.value) === JSON.stringify(other.value);
     }
+
+    getValue(): T {
+        return this.value;
+    }
 }
