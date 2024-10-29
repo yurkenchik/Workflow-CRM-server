@@ -2,12 +2,12 @@ import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@mikro-orm/nestjs";
 import {User} from "../../domain/entities/user.entity";
 import {CreateUserDto} from "../dto/user/create-user.dto";
-import {Email} from "../../domain/value-objects/email/email";
+import {Email} from "../../domain/value-objects/email";
 import {UpdateUserDto} from "../dto/user/update-user.dto";
-import {PhoneNumber} from "../../domain/value-objects/phone-number/phone-number";
 import {UserNotFoundException} from "../../common/exceptions/user-not-found.exception";
 import {UserRepository} from "../../domain/repositories/user.repository";
 import { v4 as uuidv4 } from "uuid";
+import {UserId} from "../../domain/value-objects/user-id";
 
 @Injectable()
 export class UserService {
@@ -17,13 +17,13 @@ export class UserService {
         private readonly userRepository: UserRepository,
     ) {}
 
-    async findUserById(userId: string): Promise<User> {
+    async findUserById(userId: UserId): Promise<User> {
         return this.findUserByField(userId, "id");
     }
 
     async findUserByEmail(email: Email): Promise<User> {
-        const emailValue = this.formatEmail(email.getEmail());
-        return this.findUserByField(emailValue, "email");
+        const emailValueObject = new Email(email.getValue());
+        return this.findUserByField(emailValueObject, "email");
     }
 
     async findUsers(): Promise<Array<User>> {
@@ -31,34 +31,21 @@ export class UserService {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const { email, phoneNumber } = createUserDto;
-        const emailValue = this.formatEmail(email);
-        const phoneNumberValue = this.formatPhoneNumber(phoneNumber);
-
         return await this.userRepository
             .createQueryBuilder("user")
             .insert({
                 id: uuidv4(),
-                ...createUserDto,
-                email: emailValue,
-                phoneNumber: phoneNumberValue
+                ...createUserDto
             })
             .execute();
     }
 
-    async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
-        const { email, phoneNumber } = updateUserDto;
-        const emailValue = this.formatEmail(email.getEmail());
-        const phoneNumberValue = this.formatPhoneNumber(phoneNumber.getPhoneNumber());
+    async updateUser(userId: UserId, updateUserDto: UpdateUserDto): Promise<User> {
         const user = await this.findUserById(userId);
 
         return await this.userRepository
             .createQueryBuilder("user")
-            .update({
-                ...updateUserDto,
-                email: emailValue,
-                phoneNumber: phoneNumberValue
-            })
+            .update(updateUserDto)
             .where({ id: user.id })
             .execute();
     }
@@ -67,22 +54,14 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    async deleteUser(userId: string): Promise<void> {
-        await this.userRepository.nativeDelete(userId);
+    async deleteUser(userId: UserId): Promise<void> {
+        await this.userRepository.nativeDelete(userId.getValue());
     }
 
-    formatEmail(email: string): string {
-        return new Email(email).getEmail();
-    }
-
-    formatPhoneNumber(phoneNumber: string): string {
-        return new PhoneNumber(phoneNumber).getPhoneNumber();
-    }
-
-    private async findUserByField(value: string, field: keyof User): Promise<User> {
+    private async findUserByField(value: Email | UserId, field: keyof User): Promise<User> {
         const user = await this.userRepository
             .createQueryBuilder("user")
-            .where({ [field]: value })
+            .where({ [field]: value.getValue })
             .getSingleResult();
 
         if (!user) {
