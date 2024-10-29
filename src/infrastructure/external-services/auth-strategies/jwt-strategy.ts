@@ -7,11 +7,12 @@ import {Request} from "express";
 import {TokenPayloadDto} from "../../../application/dto/auth/token-payload.dto";
 import {UserService} from "../../../application/services/user.service";
 import {User} from "../../../domain/entities/user.entity";
+import {UserId} from "../../../domain/value-objects/user-id";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private readonly configService: ConfigService,
+        configService: ConfigService,
         private readonly userService: UserService,
     ) {
         super({
@@ -23,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(tokenPayload: TokenPayloadDto): Promise<User> {
-        return this.userService.findUserById(tokenPayload.id);
+        const userId = new UserId(tokenPayload.id);
+        return this.userService.findUserById(userId);
     }
 }
