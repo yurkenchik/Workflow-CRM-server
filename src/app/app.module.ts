@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {MikroOrmModule} from "@mikro-orm/nestjs";
-import {getMikroOrmConfig} from "../infrastructure/database/orm/microorm-config";
-import {UserModule} from "../modules/user.module";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import * as process from "node:process";
 import * as dotenv from 'dotenv';
 import {JwtModule} from "@nestjs/jwt";
-import {jwtConfig} from "../common/utils/jwt.config";
+import {PassportModule} from "@nestjs/passport";
+import {DatabaseService} from "../database/database.service";
+import {AuthorizationModule} from "../authorization/authorization.module";
 dotenv.config();
 
 @Module({
@@ -18,25 +18,22 @@ dotenv.config();
             envFilePath: `.${process.env.NODE_ENV}.env`,
         }),
         MikroOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: getMikroOrmConfig
+            useClass: DatabaseService
         }),
-        UserModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => {
-                const jwtConfigFactory = jwtConfig(configService);
-
                 return {
-                    secret: jwtConfigFactory.secretKey,
+                    secret: configService.get<string>("JWT_REFRESH_TOKEN_SECRET"),
                     signOptions: {
-                        expiresIn: jwtConfigFactory.signOptions.expiresIn
+                        expiresIn: configService.get<string>("JWT_REFRESH_TOKEN_EXPIRATION_MS")
                     }
                 };
             }
-        })
+        }),
+        PassportModule,
+        AuthorizationModule
     ],
     controllers: [AppController],
     providers: [AppService],
