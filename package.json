@@ -17,11 +17,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+
+    "migration:create": "read -p 'Enter migration name: ' name && npx mikro-orm migration:create --config ./src/database/orm/mikro-orm.config.ts --name \"$name\"",
+    "migration:run": "npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
+    "migration:revert": "npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n"
   },
   "dependencies": {
     "@mikro-orm/cli": "^6.3.13",
     "@mikro-orm/core": "^6.3.13",
+    "@mikro-orm/migrations": "^6.3.13",
     "@mikro-orm/nestjs": "^6.0.2",
     "@mikro-orm/postgresql": "^6.3.13",
     "@mikro-orm/reflection": "^6.3.13",
@@ -31,6 +36,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/uuid": "^10.0.0",
@@ -40,7 +46,9 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
