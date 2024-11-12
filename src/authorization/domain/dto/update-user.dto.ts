@@ -6,7 +6,5 @@ export class UpdateUserDto {
     @IsOptional()
     readonly phoneNumber: string;
     @IsOptional()
-    readonly confirmationCode: string;
-    @IsOptional()
     readonly password: string;
 }

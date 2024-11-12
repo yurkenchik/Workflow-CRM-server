@@ -11,5 +11,8 @@ export class UserAggregate {
         return this.user;
     }
 
-
+    authorizeUser(userData: Partial<User>): User {
+        const user = new User();
+        user.id = uui
+    }
 }
