@@ -1,11 +1,13 @@
 import {User} from "../entities/user.entity";
 import {CreateUserDto} from "../dto/create-user.dto";
-import {UpdateUserDto} from "../dto/update-user.dto";
+import {ConfirmAuthorizationDto} from "../dto/confirm-authorization.dto";
+import {LoginDto} from "../dto/login.dto";
+import {AuthorizationResponseDto} from "../dto/authorization-response.dto";
 
-export abstract class AuthorizationUserRepository {
-    abstract getUsers(): Promise<User[]>;
-    abstract getUserById(userId: string): Promise<User>;
-    abstract createUser(createUserDto: CreateUserDto): Promise<User>;
-    abstract updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User>;
-    abstract deleteUser(userId: string): Promise<void>;
+export abstract class AuthorizationRepository {
+    abstract registration(createUserDto: CreateUserDto): Promise<User>;
+    abstract confirmRegistration(confirmAuthorizationDto: ConfirmAuthorizationDto): Promise<AuthorizationResponseDto>;
+    abstract login(loginDto: LoginDto): Promise<User>;
+    abstract confirmLogin(confirmAuthorizationDto: ConfirmAuthorizationDto): Promise<AuthorizationResponseDto>;
+    abstract logout(userId: string): Promise<void>;
 }
