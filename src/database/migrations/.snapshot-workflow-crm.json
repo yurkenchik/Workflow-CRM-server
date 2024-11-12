@@ -16,6 +16,57 @@
           "length": 255,
           "mappedType": "string"
         },
+        "value": {
+          "name": "value",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "confirmation_code",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "confirmation_code_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -243,6 +294,22 @@
             "Low",
             "Medium",
             "High"
+          ],
+          "mappedType": "enum"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "To do",
+            "Active",
+            "Inactive",
+            "In review",
+            "Done"
           ],
           "mappedType": "enum"
         },
@@ -618,8 +685,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "confirmation_code": {
-          "name": "confirmation_code",
+        "password": {
+          "name": "password",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -628,8 +695,18 @@
           "length": 255,
           "mappedType": "string"
         },
-        "password": {
-          "name": "password",
+        "is_account_verified": {
+          "name": "is_account_verified",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "refresh_token": {
+          "name": "refresh_token",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -650,6 +727,16 @@
         },
         "profile_id": {
           "name": "profile_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "confirmation_code_id": {
+          "name": "confirmation_code_id",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -703,6 +790,16 @@
           "unique": true
         },
         {
+          "columnNames": [
+            "confirmation_code_id"
+          ],
+          "composite": false,
+          "keyName": "user_confirmation_code_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
           "keyName": "user_email_phone_number_unique",
           "columnNames": [
             "email",
@@ -748,6 +845,18 @@
             "id"
           ],
           "referencedTableName": "public.profile",
+          "updateRule": "cascade"
+        },
+        "user_confirmation_code_id_foreign": {
+          "constraintName": "user_confirmation_code_id_foreign",
+          "columnNames": [
+            "confirmation_code_id"
+          ],
+          "localTableName": "public.user",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.confirmation_code",
           "updateRule": "cascade"
         }
       },

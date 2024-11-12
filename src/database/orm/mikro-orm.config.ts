@@ -11,6 +11,7 @@ import { Member } from '../../project/domain/entities/member.entity';
 import { Task } from '../../project/domain/entities/task.entity';
 import * as dotenv from "dotenv";
 import * as process from "node:process";
+import {ConfirmationCode} from "../../authorization/domain/entities/confirmation-code";
 dotenv.config();
 
 const configService = new ConfigService();
@@ -23,7 +24,7 @@ export default defineConfig({
     user: process.env["DB_USER"],
     password: process.env["DB_PASSWORD"],
     dbName: process.env["DB_NAME"],
-    entities: [User, ServiceDetails, Profile, UserSettings, Project, Member, Task],
+    entities: [User, ServiceDetails, Profile, UserSettings, Project, Member, Task, ConfirmationCode],
     metadataProvider: TsMorphMetadataProvider,
     debug: true,
     migrations: {

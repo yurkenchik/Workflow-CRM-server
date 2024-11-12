@@ -12,6 +12,7 @@ import {Task} from "../project/domain/entities/task.entity";
 import {defineConfig} from "@mikro-orm/core";
 import {PostgreSqlDriver} from "@mikro-orm/postgresql";
 import {Migrator} from "@mikro-orm/migrations";
+import {ConfirmationCode} from "../authorization/domain/entities/confirmation-code";
 
 @Injectable()
 export class DatabaseService implements MikroOrmOptionsFactory {
@@ -19,7 +20,16 @@ export class DatabaseService implements MikroOrmOptionsFactory {
         private readonly configService: ConfigService,
     ) {}
 
-    private readonly entities = [User, ServiceDetails, Profile, UserSettings, Project, Member, Task];
+    private readonly entities = [
+        User,
+        ServiceDetails,
+        Profile,
+        UserSettings,
+        Project,
+        Member,
+        Task,
+        ConfirmationCode
+    ];
 
     createMikroOrmOptions(contextName?: string): MikroOrmModuleOptions {
         return defineConfig({
