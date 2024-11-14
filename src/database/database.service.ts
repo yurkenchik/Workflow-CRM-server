@@ -12,7 +12,7 @@ import {Task} from "../project/domain/entities/task.entity";
 import {defineConfig} from "@mikro-orm/core";
 import {PostgreSqlDriver} from "@mikro-orm/postgresql";
 import {Migrator} from "@mikro-orm/migrations";
-import {ConfirmationCode} from "../authorization/domain/entities/confirmation-code";
+import {ConfirmationCode} from "../authorization/domain/entities/confirmation-code.entity";
 
 @Injectable()
 export class DatabaseService implements MikroOrmOptionsFactory {

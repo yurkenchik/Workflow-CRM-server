@@ -11,7 +11,7 @@ import { Member } from '../../project/domain/entities/member.entity';
 import { Task } from '../../project/domain/entities/task.entity';
 import * as dotenv from "dotenv";
 import * as process from "node:process";
-import {ConfirmationCode} from "../../authorization/domain/entities/confirmation-code";
+import {ConfirmationCode} from "../../authorization/domain/entities/confirmation-code.entity";
 dotenv.config();
 
 const configService = new ConfigService();
