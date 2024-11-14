@@ -25,6 +25,6 @@ export class ServiceDetails {
     @Property()
     teamPeopleRange: string;
 
-    @OneToOne(() => User, user => user.serviceDetails)
+    @OneToOne(() => User, { nullable: false })
     user: User;
 }

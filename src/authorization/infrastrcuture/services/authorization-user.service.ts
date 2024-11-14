@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, InternalServerErrorException} from "@nestjs/common";
 import {InjectRepository} from "@mikro-orm/nestjs";
 import {User} from "../../domain/entities/user.entity";
 import {EntityRepository, EntityManager} from "@mikro-orm/postgresql";
@@ -6,6 +6,7 @@ import {UpdateUserDto} from "../../domain/dto/update-user.dto";
 import {UserNotFoundException} from "../../../common/exceptions/400-client/404/user-not-found.exception";
 import {CreateUserDto} from "../../domain/dto/create-user.dto";
 import {AuthorizationAggregate} from "../../domain/aggregate/authorization.aggregate";
+import {UserAlreadyExistsException} from "../../../common/exceptions/400-client/400/user-already-exists.exception";
 
 @Injectable()
 export class AuthorizationUserService {
@@ -36,12 +37,22 @@ export class AuthorizationUserService {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const user = this.authorizationAggregate.createUser(createUserDto);
+        try {
+            const userPayload = this.authorizationAggregate.createUser(createUserDto);
 
-        return this.userRepository
-            .createQueryBuilder()
-            .insert(user)
-            .execute();
+            const user = await this.userRepository
+                .createQueryBuilder()
+                .insert(userPayload)
+                .returning("*")
+                .execute();
+
+            return this.getUserById(user.insertId);
+        } catch (error) {
+            if (error.code === "23505") {
+                throw new UserAlreadyExistsException();
+            }
+            throw new InternalServerErrorException(error.message);
+        }
     }
 
     async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {

@@ -6,7 +6,7 @@ import {Email} from "../../../common/value-objects/email.vo";
 import {PhoneNumber} from "../../../common/value-objects/phone-number.vo";
 import {Password} from "../../../common/value-objects/password.vo";
 import {UpdateUserDto} from "../dto/update-user.dto";
-import {ConfirmationCode} from "../entities/confirmation-code";
+import {ConfirmationCode} from "../entities/confirmation-code.entity";
 import {GenerateConfirmationCodeDto} from "../dto/generate-confirmation-code.dto";
 
 export class AuthorizationAggregate {

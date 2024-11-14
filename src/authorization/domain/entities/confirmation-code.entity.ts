@@ -13,6 +13,6 @@ export class ConfirmationCode {
     @Property()
     expiresAt: Date;
 
-    @OneToOne(() => User, user => user.confirmationCode)
-    user: User;
+    @OneToOne(() => User, { nullable: true })
+    user?: User;
 }

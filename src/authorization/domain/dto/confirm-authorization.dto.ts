@@ -1,5 +1,5 @@
 
 export class ConfirmAuthorizationDto {
     readonly email: string;
-    readonly password: string;
+    readonly confirmationCode: string;
 }

@@ -16,12 +16,12 @@ export class TokenService {
 
         const accessToken = this.jwtService.sign({ email, phoneNumber }, {
             secret: this.configService.get<string>("JWT_ACCESS_TOKEN_SECRET"),
-            expiresIn: this.configService.get<string>("JWT_ACCESS_TOKEN_EXPIRES_IN"),
+            expiresIn: this.configService.get<string>("JWT_ACCESS_TOKEN_EXPIRATION_MS"),
         });
 
         const refreshToken = this.jwtService.sign({ email, phoneNumber }, {
             secret: this.configService.get<string>("JWT_REFRESH_TOKEN_SECRET"),
-            expiresIn: this.configService.get<string>("JWT_REFRESH_TOKEN_EXPIRES_IN"),
+            expiresIn: this.configService.get<string>("JWT_REFRESH_TOKEN_EXPIRATION_MS"),
         });
 
         return { accessToken, refreshToken };

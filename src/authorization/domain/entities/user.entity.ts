@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import {ServiceDetails} from "./service-details.entity";
 import {Profile} from "../../../profile/domain/entities/profile.entity";
 import {Member} from "../../../project/domain/entities/member.entity";
-import {ConfirmationCode} from "./confirmation-code";
+import {ConfirmationCode} from "./confirmation-code.entity";
 
 @Entity()
 @Unique({ properties: ["email", "phoneNumber"] })
@@ -25,18 +25,15 @@ export class User {
     @Property({ default: false })
     isAccountVerified: boolean;
 
-    @Property()
+    @Property({ nullable: true })
     refreshToken: string;
-
-    @OneToOne({ orphanRemoval: true })
-    serviceDetails: ServiceDetails;
-
-    @OneToOne({ orphanRemoval: true })
-    profile: Profile;
-
-    @OneToOne({ orphanRemoval: true })
-    confirmationCode: ConfirmationCode;
 
     @OneToMany(() => Member, members => members.user)
     members: Collection<Member> = new Collection<Member>(this);
+
+    @Property({ onCreate: () => new Date() })
+    createdAt?: Date;
+
+    @Property({ onUpdate: () => new Date() })
+    updatedAt?: Date;
 }
