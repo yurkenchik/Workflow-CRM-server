@@ -5,7 +5,7 @@ import {User} from "../domain/entities/user.entity";
 import {LoginDto} from "../domain/dto/login.dto";
 import {AuthorizationResponseDto} from "../domain/dto/authorization-response.dto";
 import {ConfirmAuthorizationDto} from "../domain/dto/confirm-authorization.dto";
-import {UserId} from "../../common/guards/user-id.decorator";
+import {UserId} from "../../common/decorators/user-id.decorator";
 
 @Controller('auth')
 export class AuthorizationController {
