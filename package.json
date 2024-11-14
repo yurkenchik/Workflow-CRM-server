@@ -32,9 +32,12 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/cqrs": "^10.2.8",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^4.1.1",
+    "@sendgrid/mail": "^8.1.4",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
@@ -43,6 +46,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cross-env": "^7.0.3",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
@@ -52,6 +56,7 @@
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "sendgrid": "^5.2.3",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

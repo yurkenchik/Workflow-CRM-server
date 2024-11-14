@@ -9,6 +9,9 @@ import {JwtModule} from "@nestjs/jwt";
 import {PassportModule} from "@nestjs/passport";
 import {DatabaseService} from "../database/database.service";
 import {AuthorizationModule} from "../authorization/authorization.module";
+import {EmailModule} from "../messaging/modules/email.module";
+import {CronJobsModule} from "../cron-jobs/cron-jobs.module";
+import {ScheduleModule} from "@nestjs/schedule";
 dotenv.config();
 
 @Module({
@@ -20,20 +23,12 @@ dotenv.config();
         MikroOrmModule.forRootAsync({
             useClass: DatabaseService
         }),
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => {
-                return {
-                    secret: configService.get<string>("JWT_REFRESH_TOKEN_SECRET"),
-                    signOptions: {
-                        expiresIn: configService.get<string>("JWT_REFRESH_TOKEN_EXPIRATION_MS")
-                    }
-                };
-            }
-        }),
+        ScheduleModule.forRoot(),
+        JwtModule,
         PassportModule,
-        AuthorizationModule
+        AuthorizationModule,
+        EmailModule,
+        CronJobsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
