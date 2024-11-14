@@ -1,4 +1,4 @@
-import {Collection, Entity, Enum, Index, OneToMany, PrimaryKey, Property, Unique} from "@mikro-orm/core";
+import {Collection, Entity, Enum, OneToMany, PrimaryKey, Property, Unique} from "@mikro-orm/core";
 import {ProjectStatus} from "../../../common/enums/project-status.enum";
 import { v4 as uuid } from "uuid";
 import {Task} from "./task.entity";

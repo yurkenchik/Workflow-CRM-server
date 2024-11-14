@@ -1,8 +1,5 @@
 import {Project} from "../entities/project.entity";
 import {Member} from "../entities/member.entity";
-import {ProjectStatus} from "../../../common/enums/project-status.enum";
-import {Task} from "../entities/task.entity";
-import {TaskStatus} from "../../../common/enums/task-status.enum";
 
 export class ProjectAggregate {
     private readonly project: Project;
