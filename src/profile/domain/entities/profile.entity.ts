@@ -50,6 +50,6 @@ export class Profile {
     @OneToOne({ orphanRemoval: true })
     userSettings: UserSettings;
 
-    @OneToOne(() => User, user => user.profile)
+    @OneToOne(() => User, { nullable: false })
     user: User;
 }
