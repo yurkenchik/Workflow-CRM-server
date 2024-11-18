@@ -42,12 +42,13 @@ export class ServiceDetailsService {
                 ...createServiceDetailsDto,
                 user
             })
-            .returning("*")
+            .returning("id")
             .execute();
 
         const serviceDetails = await this.getServiceDetailsById(
             serviceDetailsInsertResult.insertId
         );
+
         await this.entityManager.persistAndFlush(serviceDetails);
         return serviceDetails;
     }
