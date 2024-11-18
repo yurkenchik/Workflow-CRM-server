@@ -10,11 +10,9 @@ export class Profile {
     id: string = uuid();
 
     @Property()
-    @Unique()
     email: string;
 
     @Property()
-    @Unique()
     phoneNumber: string;
 
     @Property()
