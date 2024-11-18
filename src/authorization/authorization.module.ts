@@ -1,25 +1,25 @@
-import {Module} from "@nestjs/common";
-import {AuthorizationUserService} from "./infrastrcuture/services/authorization-user.service";
-import {MikroOrmModule} from "@mikro-orm/nestjs";
-import {User} from "./domain/entities/user.entity";
-import {JwtModule} from "@nestjs/jwt";
-import {ConfigModule, ConfigService} from "@nestjs/config";
-import {TokenService} from "./infrastrcuture/services/token.service";
-import {AuthorizationController} from "./presentation/authorization.controller";
-import {AuthorizationService} from "./infrastrcuture/services/authorization.service";
-import {CqrsModule} from "@nestjs/cqrs";
-import {SendVerificationCodeHandler} from "../messaging/infrastructure/handlers/send-verification-code.handler";
-import {EmailModule} from "../messaging/modules/email.module";
-import {ConfirmationCodeService} from "./infrastrcuture/services/confirmation-code.service";
-import {ConfirmationCode} from "./domain/entities/confirmation-code.entity";
+import { Module } from "@nestjs/common";
+import { AuthorizationService } from "src/authorization/infrastructure/services/authorization.service";
+import { TokenService } from "src/authorization/infrastructure/services/token.service";
+import { AuthorizationUserService } from "src/authorization/infrastructure/services/authorization-user.service";
+import { SendVerificationCodeHandler } from "src/messaging/infrastructure/handlers/send-verification-code.handler";
+import { ConfirmationCodeService } from "src/authorization/infrastructure/services/confirmation-code.service";
+import { ConfigModule } from "@nestjs/config";
+import { MikroOrmModule } from "@mikro-orm/nestjs";
+import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
+import { User } from "src/authorization/domain/entities/user.entity";
+import { AuthorizationController } from "src/authorization/presentation/authorization.controller";
+import { JwtModule } from "@nestjs/jwt";
+import { CqrsModule } from "@nestjs/cqrs";
+import { EmailModule } from "src/messaging/modules/email.module";
 
 @Module({
     providers: [
         AuthorizationService,
         TokenService,
-        AuthorizationUserService,
-        SendVerificationCodeHandler,
         ConfirmationCodeService,
+        SendVerificationCodeHandler,
+        AuthorizationUserService
     ],
     controllers: [AuthorizationController],
     imports: [
@@ -29,6 +29,10 @@ import {ConfirmationCode} from "./domain/entities/confirmation-code.entity";
         CqrsModule,
         EmailModule
     ],
-    exports: [AuthorizationUserService],
+    exports: [
+        AuthorizationUserService,
+        AuthorizationService,
+        ConfirmationCodeService,
+    ],
 })
 export class AuthorizationModule {}
