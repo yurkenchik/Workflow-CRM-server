@@ -1,5 +1,5 @@
 import {Body, Controller, Delete, Post} from "@nestjs/common";
-import {AuthorizationService} from "../infrastrcuture/services/authorization.service";
+import {AuthorizationService} from "src/authorization/infrastructure/services/authorization.service";
 import {CreateUserDto} from "../domain/dto/create-user.dto";
 import {User} from "../domain/entities/user.entity";
 import {LoginDto} from "../domain/dto/login.dto";
