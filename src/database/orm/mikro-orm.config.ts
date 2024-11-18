@@ -1,21 +1,18 @@
-import { defineConfig } from '@mikro-orm/core';
-import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { ConfigService } from '@nestjs/config';
-import { User } from '../../authorization/domain/entities/user.entity';
-import { ServiceDetails } from '../../authorization/domain/entities/service-details.entity';
-import { Profile } from '../../profile/domain/entities/profile.entity';
-import { UserSettings } from '../../profile/domain/entities/user-settings.entity';
-import { Project } from '../../project/domain/entities/project.entity';
-import { Member } from '../../project/domain/entities/member.entity';
-import { Task } from '../../project/domain/entities/task.entity';
-import * as dotenv from "dotenv";
-import * as process from "node:process";
+import {defineConfig} from '@mikro-orm/core';
+import {TsMorphMetadataProvider} from '@mikro-orm/reflection';
+import {PostgreSqlDriver} from '@mikro-orm/postgresql';
+import {User} from '../../authorization/domain/entities/user.entity';
+import {ServiceDetails} from '../../authorization/domain/entities/service-details.entity';
+import {Profile} from '../../profile/domain/entities/profile.entity';
+import {UserSettings} from '../../profile/domain/entities/user-settings.entity';
+import {Project} from '../../project/domain/entities/project.entity';
+import {Member} from '../../project/domain/entities/member.entity';
+import {Task} from '../../project/domain/entities/task.entity';
 import {ConfirmationCode} from "../../authorization/domain/entities/confirmation-code.entity";
-dotenv.config();
+import * as dotenv from 'dotenv';
+import {Migrator} from "@mikro-orm/migrations";
 
-const configService = new ConfigService();
-console.log("DB NAME: ", configService.get<string>("DB_NAME"));
+dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 export default defineConfig({
     driver: PostgreSqlDriver,
@@ -32,4 +29,5 @@ export default defineConfig({
         pathTs: './src/database/migrations',
         glob: '!(*.d).{js,ts}',
     },
+    extensions: [Migrator],
 });
