@@ -8,7 +8,8 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "cross-env NODE_ENV=production nest start",
+    "start:prod": "cross-env NODE_ENV=production nest start",
+    "start:stage": "cross-env NODE_ENV=staging nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -18,9 +19,16 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:create": "read -p 'Enter migration name: ' name && npx mikro-orm migration:create --config ./src/database/orm/mikro-orm.config.ts --name \"$name\"",
-    "migration:run": "npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
-    "migration:revert": "npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n"
+    "migration:create": "read -p 'Enter migration name: ' name && NODE_ENV=staging npx mikro-orm migration:create --config ./src/database/orm/mikro-orm.config.ts --name \"$name\"",
+
+    "migration:run:dev": "NODE_ENV=development npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
+    "migration:revert:dev": "NODE_ENV=development npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n",
+
+    "migration:run:stage": "NODE_ENV=staging npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
+    "migration:revert:stage": "NODE_ENV=staging npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n",
+
+    "migration:run:prod": "NODE_ENV=production npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
+    "migration:revert:prod": "NODE_ENV=production npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n"
   },
   "dependencies": {
     "@mikro-orm/cli": "^6.3.13",
