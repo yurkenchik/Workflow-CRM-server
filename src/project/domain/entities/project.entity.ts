@@ -11,7 +11,6 @@ export class Project {
     id: string = uuid();
 
     @Property()
-    @Unique()
     name: string;
 
     @Property()

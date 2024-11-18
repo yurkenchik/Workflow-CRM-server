@@ -13,7 +13,7 @@ export class Member {
     project!: Project;
 
     @ManyToOne(() => User)
-    user: User;
+    user!: User;
 
     @ManyToMany({ entity: () => Task })
     tasks = new Collection<Task>(this);
