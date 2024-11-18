@@ -1,9 +1,16 @@
-import {Entity, Enum, OneToOne, PrimaryKey, Property} from "@mikro-orm/core";
+import {
+    Entity,
+    Enum,
+    OneToOne,
+    PrimaryKey,
+    Property,
+    Cascade,
+} from "@mikro-orm/core";
 import { v4 as uuid } from "uuid";
-import {ServiceUsagePurpose} from "../../../common/enums/service-usage-purpose.enum";
-import {PersonBestDescription} from "../../../common/enums/person-best-description.enum";
-import {BusinessDirection} from "../../../common/enums/business-direction.enum";
-import {User} from "./user.entity";
+import { ServiceUsagePurpose } from "../../../common/enums/service-usage-purpose.enum";
+import { PersonBestDescription } from "../../../common/enums/person-best-description.enum";
+import { BusinessDirection } from "../../../common/enums/business-direction.enum";
+import { User } from "./user.entity";
 
 @Entity()
 export class ServiceDetails {
@@ -11,20 +18,20 @@ export class ServiceDetails {
     id: string = uuid();
 
     @Enum(() => ServiceUsagePurpose)
-    usagePurpose: ServiceUsagePurpose;
+    usagePurpose!: ServiceUsagePurpose;
 
     @Enum(() => PersonBestDescription)
-    personBestDescriptor: PersonBestDescription;
+    personBestDescriptor!: PersonBestDescription;
 
-    @Property()
-    companyName: string;
+    @Property({ nullable: true })
+    companyName?: string;
 
     @Enum(() => BusinessDirection)
-    businessDirection: BusinessDirection;
+    businessDirection!: BusinessDirection;
 
-    @Property()
-    teamPeopleRange: string;
+    @Property({ nullable: true })
+    teamPeopleRange?: string;
 
     @OneToOne(() => User)
-    user!: User;
+    user?: User;
 }

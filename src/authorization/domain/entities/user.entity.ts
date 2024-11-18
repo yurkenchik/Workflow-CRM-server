@@ -1,6 +1,15 @@
-import {Collection, Entity, OneToMany, PrimaryKey, Property, Unique} from "@mikro-orm/core";
+import {
+    Collection,
+    Entity,
+    OneToMany,
+    OneToOne,
+    PrimaryKey,
+    Property,
+    Unique,
+} from "@mikro-orm/core";
 import { v4 as uuid } from "uuid";
-import {Member} from "../../../project/domain/entities/member.entity";
+import { Member } from "../../../project/domain/entities/member.entity";
+import { ServiceDetails } from "./service-details.entity";
 
 @Entity()
 @Unique({ properties: ["email", "phoneNumber"] })
@@ -9,28 +18,26 @@ export class User {
     id: string = uuid();
 
     @Property()
-    @Unique()
     email!: string;
 
     @Property()
-    @Unique()
     phoneNumber!: string;
 
     @Property()
-    password: string;
+    password!: string;
 
     @Property({ default: false })
-    isAccountVerified: boolean;
+    isAccountVerified: boolean = false;
 
     @Property({ nullable: true })
-    refreshToken: string;
+    refreshToken?: string;
 
-    @OneToMany(() => Member, members => members.user)
-    members: Collection<Member> = new Collection<Member>(this);
+    @OneToMany(() => Member, (members) => members.user)
+    members = new Collection<Member>(this);
 
     @Property({ onCreate: () => new Date() })
-    createdAt?: Date;
+    createdAt: Date = new Date();
 
     @Property({ onUpdate: () => new Date() })
-    updatedAt?: Date;
+    updatedAt: Date = new Date();
 }
