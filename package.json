@@ -8,11 +8,10 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:prod": "cross-env NODE_ENV=production nest start",
+    "start:prod": "node dist/main",
     "start:stage": "cross-env NODE_ENV=staging nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -20,13 +19,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:create": "read -p 'Enter migration name: ' name && NODE_ENV=staging npx mikro-orm migration:create --config ./src/database/orm/mikro-orm.config.ts --name \"$name\"",
-
     "migration:run:dev": "NODE_ENV=development npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
     "migration:revert:dev": "NODE_ENV=development npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n",
-
     "migration:run:stage": "NODE_ENV=staging npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
     "migration:revert:stage": "NODE_ENV=staging npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n",
-
     "migration:run:prod": "NODE_ENV=production npx mikro-orm migration:up --config ./src/database/orm/mikro-orm.config.ts\n",
     "migration:revert:prod": "NODE_ENV=production npx mikro-orm migration:down --config ./src/database/orm/mikro-orm.config.ts\n"
   },
@@ -45,6 +41,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.1",
+    "@nestjs/swagger": "^8.0.7",
     "@sendgrid/mail": "^8.1.4",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
@@ -65,6 +62,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sendgrid": "^5.2.3",
+    "swagger": "^0.7.5",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
