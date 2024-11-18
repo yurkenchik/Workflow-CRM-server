@@ -1,10 +1,10 @@
 import {Injectable} from "@nestjs/common";
-import {Cron, CronExpression, Interval} from "@nestjs/schedule";
+import {Cron, CronExpression} from "@nestjs/schedule";
 import {InjectRepository} from "@mikro-orm/nestjs";
-import {ConfirmationCode} from "../../../authorization/domain/entities/confirmation-code.entity";
 import {EntityRepository} from "@mikro-orm/postgresql";
 import {User} from "../../../authorization/domain/entities/user.entity";
 import {subMinutes} from "date-fns";
+import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
 
 @Injectable()
 export class CleanUpService {
@@ -33,7 +33,7 @@ export class CleanUpService {
             .createQueryBuilder()
             .delete()
             .from(User)
-            .where({ isVerified: false })
+            .where({ isAccountVerified: false })
             .andWhere({ createdAt: { $lt: thresholdDate } });
     }
 }
