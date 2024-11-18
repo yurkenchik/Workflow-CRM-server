@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus} from "@nestjs/common";
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export class InvalidPasswordException extends HttpException {
     constructor() {
