@@ -1,12 +1,14 @@
-import {Injectable, InternalServerErrorException} from "@nestjs/common";
-import {InjectRepository} from "@mikro-orm/nestjs";
-import {User} from "../../domain/entities/user.entity";
-import {EntityRepository, EntityManager} from "@mikro-orm/postgresql";
-import {UpdateUserDto} from "../../domain/dto/update-user.dto";
-import {UserNotFoundException} from "../../../common/exceptions/400-client/404/user-not-found.exception";
-import {CreateUserDto} from "../../domain/dto/create-user.dto";
-import {AuthorizationAggregate} from "../../domain/aggregate/authorization.aggregate";
-import {UserAlreadyExistsException} from "../../../common/exceptions/400-client/400/user-already-exists.exception";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { InjectRepository } from "@mikro-orm/nestjs";
+import { EntityRepository, EntityManager } from "@mikro-orm/postgresql";
+import { AuthorizationAggregate } from "src/authorization/domain/aggregate/authorization.aggregate";
+import { UserAlreadyExistsException } from "src/common/exceptions/400-client/400/user-already-exists.exception";
+import { UserNotFoundException } from "src/common/exceptions/400-client/404/user-not-found.exception";
+
+import { User } from "src/authorization/domain/entities/user.entity";
+import { UpdateUserDto } from "src/authorization/domain/dto/update-user.dto";
+import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
+
 
 @Injectable()
 export class AuthorizationUserService {

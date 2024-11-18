@@ -1,17 +1,22 @@
-import {Injectable} from "@nestjs/common";
-import {CreateUserDto} from "../../domain/dto/create-user.dto";
-import {User} from "../../domain/entities/user.entity";
-import {AuthorizationRepository} from "../../domain/repository/authorization.repository";
-import {ConfirmAuthorizationDto} from "../../domain/dto/confirm-authorization.dto";
-import {AuthorizationResponseDto} from "../../domain/dto/authorization-response.dto";
-import {LoginDto} from "../../domain/dto/login.dto";
-import {AuthorizationUserService} from "./authorization-user.service";
-import {TokenService} from "./token.service";
-import {AuthorizationAggregate} from "../../domain/aggregate/authorization.aggregate";
-import {CommandBus} from "@nestjs/cqrs";
-import {SendVerificationCodeCommand} from "../../../messaging/infrastructure/commands/send-verification-code.command";
-import {Email} from "../../../common/value-objects/email.vo";
-import {ConfirmationCodeService} from "./confirmation-code.service";
+import { Injectable } from "@nestjs/common";
+import { CommandBus } from "@nestjs/cqrs";
+import { IsolationLevel } from "@mikro-orm/postgresql";
+
+import { SendVerificationCodeCommand } from "src/messaging/infrastructure/commands/send-verification-code.command";
+import { ConfirmationCodeService } from "src/authorization/infrastructure/services/confirmation-code.service";
+import { AuthorizationUserService } from "src/authorization/infrastructure/services/authorization-user.service";
+import { TokenService } from "src/authorization/infrastructure/services/token.service";
+import { AuthorizationAggregate } from "src/authorization/domain/aggregate/authorization.aggregate";
+import { AuthorizationRepository } from "src/authorization/domain/repository/authorization.repository";
+
+import { User } from "src/authorization/domain/entities/user.entity";
+import { Email } from "src/common/value-objects/email.vo";
+import { LoginDto } from "src/authorization/domain/dto/login.dto";
+import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
+import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
+import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
+
+import { Transactional } from "src/common/decorators/transactional.decorator";
 
 @Injectable()
 export class AuthorizationService extends AuthorizationRepository {
@@ -26,6 +31,7 @@ export class AuthorizationService extends AuthorizationRepository {
         super();
     }
 
+    @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
     async registration(createUserDto: CreateUserDto): Promise<User> {
         const registeredUser = await this.userService.createUser(createUserDto);
         const verificationCode = this.generateVerificationCode();
@@ -80,6 +86,16 @@ export class AuthorizationService extends AuthorizationRepository {
         await this.userService.deleteUser(userId);
     }
 
+    /**
+     *
+     * @param loginDto
+     * @private
+     * @type {function}
+     *
+     * This function uses READ_UNCOMMITED transaction isolation level, cause here are used only operations for reading data,
+     * and this level of transaction is the fastest one and the least protected, but here it doesn`t metter as we only read data
+     * */
+    @Transactional({ isolationLevel: IsolationLevel.READ_UNCOMMITTED })
     private async validateUser(loginDto: LoginDto): Promise<User> {
         const { email, password } = loginDto;
         const emailValueObject = new Email(email);

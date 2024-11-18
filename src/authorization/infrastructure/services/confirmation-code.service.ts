@@ -1,14 +1,14 @@
-import {Injectable} from "@nestjs/common";
-import {InjectRepository} from "@mikro-orm/nestjs";
-import {ConfirmationCode} from "../../domain/entities/confirmation-code.entity";
-import {EntityRepository} from "@mikro-orm/postgresql";
-import {GenerateConfirmationCodeDto} from "../../domain/dto/generate-confirmation-code.dto";
-import {AuthorizationUserService} from "./authorization-user.service";
-import {AuthorizationAggregate} from "../../domain/aggregate/authorization.aggregate";
-import {
-    ConfirmationCodeNotFoundException
-} from "../../../common/exceptions/400-client/404/confirmation-code-not-found.exception";
-import {CodesDontMatchException} from "../../../common/exceptions/400-client/400/codes-dont-match.exception";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@mikro-orm/nestjs";
+import { EntityRepository } from "@mikro-orm/postgresql";
+
+import { AuthorizationUserService } from "src/authorization/infrastructure/services/authorization-user.service";
+import { AuthorizationAggregate } from "src/authorization/domain/aggregate/authorization.aggregate";
+import { ConfirmationCodeNotFoundException } from "src/common/exceptions/400-client/404/confirmation-code-not-found.exception";
+import { CodesDontMatchException } from "src/common/exceptions/400-client/400/codes-dont-match.exception";
+
+import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
+import { GenerateConfirmationCodeDto } from "src/authorization/domain/dto/generate-confirmation-code.dto";
 
 @Injectable()
 export class ConfirmationCodeService {
