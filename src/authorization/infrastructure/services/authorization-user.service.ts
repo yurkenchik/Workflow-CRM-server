@@ -9,7 +9,6 @@ import { User } from "src/authorization/domain/entities/user.entity";
 import { UpdateUserDto } from "src/authorization/domain/dto/update-user.dto";
 import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
 
-
 @Injectable()
 export class AuthorizationUserService {
     private readonly authorizationAggregate: AuthorizationAggregate = new AuthorizationAggregate();
@@ -77,11 +76,27 @@ export class AuthorizationUserService {
             .execute();
     }
 
+    private async getUserBy(searchFieldOptions: Record<string, any>): Promise<User> {
+        const { field, value } = searchFieldOptions;
+
+        const user = await this.userRepository
+            .createQueryBuilder()
+            .where({ [field]: value })
+            .getSingleResult();
+
+        if (!user) {
+            throw new UserNotFoundException();
+        }
+        return user;
+    }
+
     private async getUserByField(value: string, field: string): Promise<User> {
         const user = await this.userRepository
             .createQueryBuilder()
             .where({ [field]: value })
             .getSingleResult();
+
+        const userByEmail = await this.getUserBy({ id: "" });
 
         if (!user) {
             throw new UserNotFoundException();
