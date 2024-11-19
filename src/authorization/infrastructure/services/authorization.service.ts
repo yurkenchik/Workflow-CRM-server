@@ -16,8 +16,6 @@ import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
 import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
 import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
 
-import { Transactional } from "src/common/decorators/transactional.decorator";
-
 @Injectable()
 export class AuthorizationService extends AuthorizationRepository {
     private readonly authorizationAggregate: AuthorizationAggregate = new AuthorizationAggregate();
@@ -31,7 +29,6 @@ export class AuthorizationService extends AuthorizationRepository {
         super();
     }
 
-    @Transactional({ isolationLevel: IsolationLevel.READ_COMMITTED })
     async registration(createUserDto: CreateUserDto): Promise<User> {
         const registeredUser = await this.userService.createUser(createUserDto);
         const verificationCode = this.generateVerificationCode();
@@ -86,16 +83,6 @@ export class AuthorizationService extends AuthorizationRepository {
         await this.userService.deleteUser(userId);
     }
 
-    /**
-     *
-     * @param loginDto
-     * @private
-     * @type {function}
-     *
-     * This function uses READ_UNCOMMITED transaction isolation level, cause here are used only operations for reading data,
-     * and this level of transaction is the fastest one and the least protected, but here it doesn`t metter as we only read data
-     * */
-    @Transactional({ isolationLevel: IsolationLevel.READ_UNCOMMITTED })
     private async validateUser(loginDto: LoginDto): Promise<User> {
         const { email, password } = loginDto;
         const emailValueObject = new Email(email);

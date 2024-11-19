@@ -1,13 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityManager, EntityRepository, IsolationLevel } from "@mikro-orm/postgresql";
+import { EntityManager, EntityRepository } from "@mikro-orm/postgresql";
 
 import { ServiceDetails } from "src/authorization/domain/entities/service-details.entity";
 import { AuthorizationUserService } from "./authorization-user.service";
 import { ServiceDetailsNotFoundException } from "src/common/exceptions/400-client/404/service-details-not-found.exception";
 
 import { CreateServiceDetailsDto } from "src/authorization/domain/dto/create-service-details.dto";
-import { Transactional } from "src/common/decorators/transactional.decorator";
 
 @Injectable()
 export class ServiceDetailsService {
@@ -30,7 +29,6 @@ export class ServiceDetailsService {
         return serviceDetails;
     }
 
-    @Transactional({ isolationLevel: IsolationLevel.REPEATABLE_READ })
     async createServiceDetails(
         userId: string,
         createServiceDetailsDto: CreateServiceDetailsDto
