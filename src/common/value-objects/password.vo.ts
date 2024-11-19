@@ -15,6 +15,10 @@ export class Password extends ValueObject<string>{
         return passwordRegex.test(password);
     }
 
+    async hash(): Promise<string> {
+        return bcrypt.hash(this.value, 5);
+    }
+
     getValue(): string {
         return this.value;
     }
