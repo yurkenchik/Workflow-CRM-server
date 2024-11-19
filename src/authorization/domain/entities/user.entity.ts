@@ -1,6 +1,6 @@
 import {
     Collection,
-    Entity,
+    Entity, Index,
     OneToMany,
     OneToOne,
     PrimaryKey,
@@ -14,6 +14,7 @@ import {ApiProperty} from "@nestjs/swagger";
 
 @Entity()
 @Unique({ properties: ["email", "phoneNumber"] })
+@Index({ properties: ["email"] })
 export class User {
     @ApiProperty()
     @PrimaryKey()
