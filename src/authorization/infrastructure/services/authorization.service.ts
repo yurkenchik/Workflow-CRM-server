@@ -15,6 +15,7 @@ import { LoginDto } from "src/authorization/domain/dto/login.dto";
 import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
 import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
 import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
+import {Password} from "src/common/value-objects/password.vo";
 
 @Injectable()
 export class AuthorizationService extends AuthorizationRepository {
@@ -30,7 +31,13 @@ export class AuthorizationService extends AuthorizationRepository {
     }
 
     async registration(createUserDto: CreateUserDto): Promise<User> {
-        const registeredUser = await this.userService.createUser(createUserDto);
+        const passwordValueObject = new Password(createUserDto.password);
+        const hashedPassword = await passwordValueObject.hash();
+
+        const registeredUser = await this.userService.createUser({
+            ...createUserDto,
+            password: hashedPassword,
+        });
         const verificationCode = this.generateVerificationCode();
         const sendVerificationCodeCommand = new SendVerificationCodeCommand(registeredUser.email, verificationCode);
 
