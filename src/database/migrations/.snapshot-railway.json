@@ -321,6 +321,16 @@
       "schema": "public",
       "indexes": [
         {
+          "keyName": "user_email_index",
+          "columnNames": [
+            "email"
+          ],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "user_email_phone_number_unique",
           "columnNames": [
             "email",
