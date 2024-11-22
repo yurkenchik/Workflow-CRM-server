@@ -1,10 +1,11 @@
-import {Injectable} from "@nestjs/common";
-import {Cron, CronExpression} from "@nestjs/schedule";
-import {InjectRepository} from "@mikro-orm/nestjs";
-import {EntityRepository} from "@mikro-orm/postgresql";
-import {User} from "../../../authorization/domain/entities/user.entity";
-import {subMinutes} from "date-fns";
+import { Injectable } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { InjectRepository } from "@mikro-orm/nestjs";
+import { EntityRepository } from "@mikro-orm/postgresql";
+import { subMinutes } from "date-fns/subMinutes";
+
 import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
+import { User } from "src/authorization/domain/entities/user.entity";
 
 @Injectable()
 export class CleanUpService {
