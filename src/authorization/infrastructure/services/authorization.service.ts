@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import {Injectable, Logger} from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
 import { SendVerificationCodeCommand } from "src/messaging/infrastructure/commands/send-verification-code.command";
@@ -37,6 +37,7 @@ export class AuthorizationService extends AuthorizationRepository {
             ...createUserDto,
             password: hashedPassword,
         });
+
         const verificationCode = this.generateVerificationCode();
         const sendVerificationCodeCommand = new SendVerificationCodeCommand(registeredUser.email, verificationCode);
 
@@ -77,7 +78,6 @@ export class AuthorizationService extends AuthorizationRepository {
         const { email, confirmationCode } = confirmAuthorizationDto;
 
         const user = await this.userService.getUserByEmail(email);
-
         await this.confirmationCodeService.verifyConfirmationCode(confirmationCode);
 
         const { accessToken, refreshToken } = await this.tokenService.generateTokens(user);
