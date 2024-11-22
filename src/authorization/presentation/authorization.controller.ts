@@ -1,32 +1,40 @@
-import {Body, Controller, Delete, Post} from "@nestjs/common";
-import {AuthorizationService} from "src/authorization/infrastructure/services/authorization.service";
-import {CreateUserDto} from "../domain/dto/create-user.dto";
-import {User} from "../domain/entities/user.entity";
-import {LoginDto} from "../domain/dto/login.dto";
-import {AuthorizationResponseDto} from "../domain/dto/authorization-response.dto";
-import {ConfirmAuthorizationDto} from "../domain/dto/confirm-authorization.dto";
-import {UserId} from "../../common/decorators/user-id.decorator";
-import {ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import { Body, Controller, Delete, Post } from "@nestjs/common";
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { CommandBus } from "@nestjs/cqrs";
+
+import { RegistrationCommand } from "src/authorization/infrastructure/commands/registration/registration.command";
+import { LoginCommand } from "src/authorization/infrastructure/commands/login/login.command";
+import {
+    ConfirmRegistrationCommand
+} from "src/authorization/infrastructure/commands/confirm-registration/confirm-registration.command";
+import { ConfirmLoginCommand } from "src/authorization/infrastructure/commands/confirm-login/confirm-login.command";
+import { LogOutCommand } from "src/authorization/infrastructure/commands/log-out/log-out.command";
+import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
+import { User } from "src/authorization/domain/entities/user.entity";
+import { LoginDto } from "src/authorization/domain/dto/login.dto";
+import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
+import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
+import { UserId } from "src/common/decorators/user-id.decorator";
 
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthorizationController {
-    constructor(private readonly authorizationService: AuthorizationService) {}
+    constructor(private readonly commandBus: CommandBus) {}
 
     @ApiOperation({ summary: 'Registration' })
     @ApiBody({ type: CreateUserDto })
     @ApiResponse({ status: 201, type: User })
     @Post("registration")
     async registration(@Body() registrationDto: CreateUserDto): Promise<User> {
-        return this.authorizationService.registration(registrationDto);
+        return this.commandBus.execute(new RegistrationCommand(registrationDto));
     }
 
     @ApiOperation({ summary: 'Login' })
     @ApiBody({ type: LoginDto })
     @ApiResponse({ status: 200, type: User })
     @Post("login")
-    async login(@Body() registrationDto: LoginDto): Promise<User> {
-        return this.authorizationService.login(registrationDto);
+    async login(@Body() loginDto: LoginDto): Promise<User> {
+        return this.commandBus.execute(new LoginCommand(loginDto));
     }
 
     @ApiOperation({ summary: 'Registration confirmation' })
@@ -34,7 +42,7 @@ export class AuthorizationController {
     @ApiResponse({ status: 200, type: AuthorizationResponseDto })
     @Post("confirm-registration")
     async confirmRegistration(@Body() confirmAuthorizationDto: ConfirmAuthorizationDto): Promise<AuthorizationResponseDto> {
-        return this.authorizationService.confirmRegistration(confirmAuthorizationDto);
+        return this.commandBus.execute(new ConfirmRegistrationCommand(confirmAuthorizationDto));
     }
 
     @ApiOperation({ summary: 'Login confirmation' })
@@ -42,13 +50,13 @@ export class AuthorizationController {
     @ApiResponse({ status: 200, type: AuthorizationResponseDto })
     @Post("confirm-login")
     async confirmLogin(@Body() confirmAuthorizationDto: ConfirmAuthorizationDto): Promise<AuthorizationResponseDto> {
-        return this.authorizationService.confirmLogin(confirmAuthorizationDto);
+        return this.commandBus.execute(new ConfirmLoginCommand(confirmAuthorizationDto));
     }
 
     @ApiOperation({ summary: 'Logging out of the account' })
     @ApiBearerAuth()
     @Delete("logout")
-    async logout(@UserId()userId: string): Promise<void> {
-        return this.authorizationService.logout(userId);
+    async logout(@UserId() userId: string): Promise<void> {
+        return this.commandBus.execute(new LogOutCommand(userId));
     }
 }
