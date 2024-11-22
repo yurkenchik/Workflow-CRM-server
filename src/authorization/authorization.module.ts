@@ -22,6 +22,7 @@ import {
 import {
     ConfirmLoginCommandHandler
 } from "src/authorization/infrastructure/commands/confirm-login/confirm-login.command.handler";
+import { ServiceDetailsController } from "src/authorization/presentation/service-details.controller";
 
 @Module({
     providers: [
@@ -36,7 +37,7 @@ import {
         ConfirmRegistrationCommandHandler,
         ConfirmLoginCommandHandler,
     ],
-    controllers: [AuthorizationController],
+    controllers: [AuthorizationController, ServiceDetailsController],
     imports: [
         ConfigModule,
         MikroOrmModule.forFeature({ entities: [User, ConfirmationCode] }),
