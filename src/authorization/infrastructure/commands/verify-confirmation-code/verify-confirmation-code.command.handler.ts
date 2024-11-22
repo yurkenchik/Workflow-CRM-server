@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import {
     VerifyConfirmationCodeCommand
-} from "src/authorization/infrastructure/handlers/commands/verify-confirmation-code.command";
+} from "src/authorization/infrastructure/commands/verify-confirmation-code/verify-confirmation-code.command";
 import { ConfirmationCodeService } from "src/authorization/infrastructure/services/confirmation-code.service";
 
 @CommandHandler(VerifyConfirmationCodeCommand)
