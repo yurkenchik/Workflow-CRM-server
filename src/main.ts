@@ -12,6 +12,7 @@ async function bootstrap(): Promise<void> {
 
     app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix("api");
+    app.enableCors();
 
     const swaggerConfig = new DocumentBuilder()
         .setTitle("Workflow CRM API documentation")
