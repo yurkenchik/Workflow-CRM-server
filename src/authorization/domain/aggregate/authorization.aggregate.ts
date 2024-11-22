@@ -1,13 +1,13 @@
-import {User} from "../entities/user.entity";
-import {ServiceDetails} from "../entities/service-details.entity";
-import {UserNotFoundException} from "../../../common/exceptions/400-client/404/user-not-found.exception";
-import {CreateUserDto} from "../dto/create-user.dto";
-import {Email} from "../../../common/value-objects/email.vo";
-import {PhoneNumber} from "../../../common/value-objects/phone-number.vo";
-import {Password} from "../../../common/value-objects/password.vo";
-import {UpdateUserDto} from "../dto/update-user.dto";
-import {ConfirmationCode} from "../entities/confirmation-code.entity";
-import {GenerateConfirmationCodeDto} from "../dto/generate-confirmation-code.dto";
+import { User } from "src/authorization/domain/entities/user.entity";
+import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
+import { Email } from "src/common/value-objects/email.vo";
+import { PhoneNumber } from "src/common/value-objects/phone-number.vo";
+import { UpdateUserDto } from "src/authorization/domain/dto/update-user.dto";
+import { Password } from "src/common/value-objects/password.vo";
+import { ServiceDetails } from "src/authorization/domain/entities/service-details.entity";
+import { UserNotFoundException } from "src/common/exceptions/400-client/404/user-not-found.exception";
+import { GenerateConfirmationCodeDto } from "src/authorization/domain/dto/generate-confirmation-code.dto";
+import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
 
 export class AuthorizationAggregate {
     private readonly users: Array<User>;
@@ -16,17 +16,16 @@ export class AuthorizationAggregate {
         return this.users.find(user => user.id === userId);
     }
 
-    createUser(createUserDto: CreateUserDto): User {
-        const { email, phoneNumber, password } = createUserDto;
+     createUser(createUserDto: CreateUserDto, hashedPassword: string): User {
+        const { email, phoneNumber } = createUserDto;
         const newUser = new User();
 
         const emailValueObject = new Email(email);
         const phoneNumberValueObject = new PhoneNumber(phoneNumber);
-        const passwordValueObject = new Password(password);
 
         newUser.email = emailValueObject.getValue();
         newUser.phoneNumber = phoneNumberValueObject.getValue();
-        newUser.password = passwordValueObject.getValue();
+        newUser.password = hashedPassword;
 
         return newUser;
     }
@@ -52,16 +51,10 @@ export class AuthorizationAggregate {
         return user;
     }
 
-    saveServiceDetailsFroUser(user: User, serviceDetails: ServiceDetails): ServiceDetails {
-        if (!user) {
-            throw new UserNotFoundException();
-        }
-
-        serviceDetails.user = user;
-        return serviceDetails;
-    }
-
-    generateConfirmationCode(user: User, generateConfirmationCodeDto: GenerateConfirmationCodeDto): ConfirmationCode {
+    generateConfirmationCode(
+        user: User,
+        generateConfirmationCodeDto: GenerateConfirmationCodeDto
+    ): ConfirmationCode {
         if (!user) {
             throw new UserNotFoundException();
         }
