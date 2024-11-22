@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import {HttpException, Injectable, InternalServerErrorException} from "@nestjs/common";
 import { InjectRepository } from "@mikro-orm/nestjs";
 import { EntityRepository, EntityManager } from "@mikro-orm/postgresql";
 import { AuthorizationAggregate } from "src/authorization/domain/aggregate/authorization.aggregate";
@@ -8,6 +8,8 @@ import { UserNotFoundException } from "src/common/exceptions/400-client/404/user
 import { User } from "src/authorization/domain/entities/user.entity";
 import { UpdateUserDto } from "src/authorization/domain/dto/update-user.dto";
 import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
+import { Password } from "src/common/value-objects/password.vo";
+import { SearchFieldOptionsDto } from "src/common/dto/search-field-options.dto";
 
 @Injectable()
 export class AuthorizationUserService {
@@ -39,20 +41,26 @@ export class AuthorizationUserService {
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         try {
-            const userPayload = this.authorizationAggregate.createUser(createUserDto);
+            const passwordValueObject = new Password(createUserDto.password);
+            const hashedPassword = await passwordValueObject.hash();
+
+            const userPayload = this.authorizationAggregate.createUser(createUserDto, hashedPassword);
 
             const user = await this.userRepository
                 .createQueryBuilder()
                 .insert(userPayload)
-                .returning("*")
+                .returning(["id", "email"])
                 .execute();
 
-            return this.getUserById(user.insertId);
+            return this.getUserBy({ field: "id", value: user.insertId });
         } catch (error) {
             if (error.code === "23505") {
                 throw new UserAlreadyExistsException();
             }
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(error);
         }
     }
 
@@ -76,8 +84,8 @@ export class AuthorizationUserService {
             .execute();
     }
 
-    private async getUserBy(searchFieldOptions: Record<string, any>): Promise<User> {
-        const { field, value } = searchFieldOptions;
+    async getUserBy(searchFieldOptionsDto: SearchFieldOptionsDto<User>): Promise<User> {
+        const { field, value } = searchFieldOptionsDto;
 
         const user = await this.userRepository
             .createQueryBuilder()
@@ -95,8 +103,6 @@ export class AuthorizationUserService {
             .createQueryBuilder()
             .where({ [field]: value })
             .getSingleResult();
-
-        const userByEmail = await this.getUserBy({ id: "" });
 
         if (!user) {
             throw new UserNotFoundException();

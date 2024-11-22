@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
-import { IsolationLevel } from "@mikro-orm/postgresql";
 
 import { SendVerificationCodeCommand } from "src/messaging/infrastructure/commands/send-verification-code.command";
 import { ConfirmationCodeService } from "src/authorization/infrastructure/services/confirmation-code.service";
@@ -15,7 +14,7 @@ import { LoginDto } from "src/authorization/domain/dto/login.dto";
 import { CreateUserDto } from "src/authorization/domain/dto/create-user.dto";
 import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
 import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
-import {Password} from "src/common/value-objects/password.vo";
+import { Password } from "src/common/value-objects/password.vo";
 
 @Injectable()
 export class AuthorizationService extends AuthorizationRepository {
@@ -56,6 +55,7 @@ export class AuthorizationService extends AuthorizationRepository {
         const { accessToken, refreshToken }  = await this.tokenService.generateTokens(user);
         user.refreshToken = refreshToken;
         user.isAccountVerified = true;
+
         await this.userService.save(user);
         await this.confirmationCodeService.deleteConfirmationCodeByUser(user.id);
 
@@ -67,7 +67,9 @@ export class AuthorizationService extends AuthorizationRepository {
         const verificationCode = this.generateVerificationCode();
         const sendVerificationCodeCommand = new SendVerificationCodeCommand(loginDto.email, verificationCode);
 
+        await this.confirmationCodeService.createConfirmationCode(user.id, { value: verificationCode });
         await this.commandBus.execute(sendVerificationCodeCommand);
+
         return user;
     }
 
@@ -80,6 +82,7 @@ export class AuthorizationService extends AuthorizationRepository {
 
         const { accessToken, refreshToken } = await this.tokenService.generateTokens(user);
         user.refreshToken = refreshToken;
+
         await this.userService.save(user);
         await this.confirmationCodeService.deleteConfirmationCodeByUser(user.id);
 
