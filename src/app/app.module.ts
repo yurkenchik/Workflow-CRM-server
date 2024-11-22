@@ -9,7 +9,7 @@ import {JwtModule} from "@nestjs/jwt";
 import {PassportModule} from "@nestjs/passport";
 import {DatabaseService} from "../database/database.service";
 import {AuthorizationModule} from "../authorization/authorization.module";
-import {EmailModule} from "../messaging/modules/email.module";
+import {MessagingModule} from "../messaging/modules/messaging.module";
 import {CronJobsModule} from "../cron-jobs/cron-jobs.module";
 import {ScheduleModule} from "@nestjs/schedule";
 dotenv.config();
@@ -27,7 +27,7 @@ dotenv.config();
         JwtModule,
         PassportModule,
         AuthorizationModule,
-        EmailModule,
+        MessagingModule,
         CronJobsModule,
     ],
     controllers: [AppController],
