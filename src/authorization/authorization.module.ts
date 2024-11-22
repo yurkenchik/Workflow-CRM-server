@@ -23,6 +23,9 @@ import {
     ConfirmLoginCommandHandler
 } from "src/authorization/infrastructure/commands/confirm-login/confirm-login.command.handler";
 import { ServiceDetailsController } from "src/authorization/presentation/service-details.controller";
+import {
+    CreateServiceDetailsCommandHandler
+} from "src/authorization/infrastructure/commands/create-service-details/create-service.details.command.handler";
 
 @Module({
     providers: [
@@ -36,6 +39,7 @@ import { ServiceDetailsController } from "src/authorization/presentation/service
         LogOutCommandHandler,
         ConfirmRegistrationCommandHandler,
         ConfirmLoginCommandHandler,
+        CreateServiceDetailsCommandHandler
     ],
     controllers: [AuthorizationController, ServiceDetailsController],
     imports: [
