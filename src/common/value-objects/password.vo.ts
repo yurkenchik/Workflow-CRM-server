@@ -11,7 +11,7 @@ export class Password extends ValueObject<string>{
     }
 
     private static validatePassword(password: string): boolean {
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
         return passwordRegex.test(password);
     }
 
