@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from "@nestjs/schedule";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { ConfigModule } from "@nestjs/config";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { MikroOrmModule} from "@mikro-orm/nestjs";
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {MikroOrmModule} from "@mikro-orm/nestjs";
-import {ConfigModule, ConfigService} from "@nestjs/config";
+
+import { DatabaseService } from "src/database/database.service";
+import { AuthorizationModule } from "src/authorization/modules/authorization.module";
+import { MessagingModule } from "src/messaging/modules/messaging.module";
+import { CronJobsModule } from "src/cron-jobs/cron-jobs.module";
+
 import * as process from "node:process";
 import * as dotenv from 'dotenv';
-import {JwtModule} from "@nestjs/jwt";
-import {PassportModule} from "@nestjs/passport";
-import {DatabaseService} from "../database/database.service";
-import {AuthorizationModule} from "../authorization/authorization.module";
-import {MessagingModule} from "../messaging/modules/messaging.module";
-import {CronJobsModule} from "../cron-jobs/cron-jobs.module";
-import {ScheduleModule} from "@nestjs/schedule";
+import { APP_GUARD } from '@nestjs/core';
+import {ProjectModule} from "src/project/modules/project.module";
 dotenv.config();
 
 @Module({
@@ -29,8 +35,19 @@ dotenv.config();
         AuthorizationModule,
         MessagingModule,
         CronJobsModule,
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 100,
+        }]),
+        ProjectModule
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard
+        }
+    ],
 })
 export class AppModule {}
