@@ -106,7 +106,7 @@ export class Migration20241118223826_InitialMigration extends Migration {
     `);
 
     this.addSql(`
-      CREATE TABLE IF NOT EXISTS "task_members" (
+        CREATE TABLE IF NOT EXISTS "task_members" (
                                                   "task_id" UUID NOT NULL,
                                                   "member_id" UUID NOT NULL,
                                                   PRIMARY KEY ("task_id", "member_id"),
@@ -121,7 +121,7 @@ export class Migration20241118223826_InitialMigration extends Migration {
     this.addSql('DROP TABLE IF EXISTS "task";');
     this.addSql('DROP TABLE IF EXISTS "member";');
     this.addSql('DROP TABLE IF EXISTS "project";');
-    this.addSql('DROP TABLE IF EXISTS "user_settings";');
+    this.addSql('DROP TABLE IF EXISTS "user_settings" CASCADE;');
     this.addSql('DROP TABLE IF EXISTS "profile";');
     this.addSql('DROP TABLE IF EXISTS "confirmation_code";');
     this.addSql('DROP TABLE IF EXISTS "service_details";');
