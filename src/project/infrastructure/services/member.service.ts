@@ -10,6 +10,7 @@ import { ProjectService } from "src/project/infrastructure/services/project.serv
 import { ProjectAggregate } from "src/project/domain/aggregate/project.aggregate";
 import { SearchFieldOptionsDto } from "src/common/dto/search-field-options.dto";
 import { MemberNotFoundException } from "src/common/exceptions/400-client/404/member-not-found.exception";
+import { CreateMemberDto } from "src/project/domain/dto/create-member.dto";
 
 @Injectable()
 export class MemberService {
@@ -36,7 +37,11 @@ export class MemberService {
         return member;
     }
 
-    async createMember(userId: string, projectId: string): Promise<Member> {
+    async createMember(
+        userId: string,
+        projectId: string,
+        createMemberDto: CreateMemberDto,
+    ): Promise<Member> {
         const user = await this.commandBus.execute(new GetUserQuery({
             field: "id",
             value: userId,
@@ -47,7 +52,7 @@ export class MemberService {
             value: projectId,
         });
 
-        const memberPayload = this.projectAggregate.createMember(user, project);
+        const memberPayload = this.projectAggregate.createMember(createMemberDto, user, project);
 
         const memberInsertResult = await this.memberRepository
             .createQueryBuilder()

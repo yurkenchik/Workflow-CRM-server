@@ -43,6 +43,7 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "'Open'",
           "enumItems": [
             "Open",
             "In progress",
@@ -489,6 +490,26 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "avatar_image_url": {
+          "name": "avatar_image_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "length": 255,
           "mappedType": "string"
         },

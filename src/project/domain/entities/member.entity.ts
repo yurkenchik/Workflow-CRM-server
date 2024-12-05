@@ -9,6 +9,12 @@ export class Member {
     @PrimaryKey()
     id: string = uuid();
 
+    @Property()
+    name!: string;
+
+    @Property({ nullable: true })
+    avatarImageUrl?: string;
+
     @ManyToOne(() => Project)
     project!: Project;
 

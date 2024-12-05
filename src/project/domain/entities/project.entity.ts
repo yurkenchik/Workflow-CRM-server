@@ -1,8 +1,8 @@
-import {Collection, Entity, Enum, OneToMany, PrimaryKey, Property, Unique} from "@mikro-orm/core";
-import {ProjectStatus} from "../../../common/enums/project-status.enum";
-import {v4 as uuid} from "uuid";
-import {Task} from "./task.entity";
-import {Member} from "./member.entity";
+import { Collection, Entity, Enum, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { v4 as uuid } from "uuid";
+import { Task } from "./task.entity";
+import { Member } from "./member.entity";
+import { ProjectStatus } from "src/common/enums/project-status.enum";
 
 @Entity()
 @Unique({ properties: ["name"] })

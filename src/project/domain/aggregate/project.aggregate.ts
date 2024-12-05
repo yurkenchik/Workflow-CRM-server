@@ -7,6 +7,7 @@ import { CreateTaskDto } from "src/project/domain/dto/create-task.dto";
 import { ProjectNotFoundException } from "src/common/exceptions/400-client/404/project-not-found.exception";
 import { MemberNotFoundException } from "src/common/exceptions/400-client/404/member-not-found.exception";
 import { UserNotFoundException } from "src/common/exceptions/400-client/404/user-not-found.exception";
+import {CreateMemberDto} from "src/project/domain/dto/create-member.dto";
 
 export class ProjectAggregate {
 
@@ -21,8 +22,16 @@ export class ProjectAggregate {
     }
 
 
-    createMember(user: User, project: Project): Member {
+    createMember(
+        createMemberDto: CreateMemberDto,
+        user: User,
+        project: Project
+    ): Member {
+        const { name, avatarImageUrl } = createMemberDto;
+
         const member = new Member();
+        member.name = name;
+        member.avatarImageUrl = avatarImageUrl;
 
         if (!user) {
             throw new UserNotFoundException();
