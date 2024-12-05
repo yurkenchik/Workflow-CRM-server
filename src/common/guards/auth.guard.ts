@@ -27,12 +27,14 @@ export class AuthGuard implements CanActivate {
             }
 
             const isAccessToken = this.isAccessTokenRequest(context);
+            console.log(isAccessToken);
 
             const secretKey = isAccessToken
                 ? this.configService.get<string>("JWT_ACCESS_TOKEN_SECRET")
                 : this.configService.get<string>("JWT_REFRESH_TOKEN_SECRET");
 
             const extractedUserFromToken = this.jwtService.verify(token, { secret: secretKey });
+            console.log("extracted user from token", extractedUserFromToken);
 
             request.user = extractedUserFromToken;
             return true;
