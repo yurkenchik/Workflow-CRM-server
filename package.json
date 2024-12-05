@@ -42,6 +42,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^8.0.7",
+    "@nestjs/throttler": "^6.2.1",
     "@sendgrid/mail": "^8.1.4",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
