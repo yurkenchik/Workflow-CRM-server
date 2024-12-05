@@ -1,6 +1,6 @@
 import {Collection, Entity, Enum, OneToMany, PrimaryKey, Property, Unique} from "@mikro-orm/core";
 import {ProjectStatus} from "../../../common/enums/project-status.enum";
-import { v4 as uuid } from "uuid";
+import {v4 as uuid} from "uuid";
 import {Task} from "./task.entity";
 import {Member} from "./member.entity";
 
@@ -17,7 +17,7 @@ export class Project {
     description: string;
 
     @Enum(() => ProjectStatus)
-    status!: ProjectStatus;
+    status: ProjectStatus = ProjectStatus.OPEN;
 
     @Property()
     createdAt: Date = new Date();
