@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import {Body, Controller, Post, UseGuards} from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
@@ -8,6 +8,7 @@ import { ServiceDetails } from "src/authorization/domain/entities/service-detail
 import {
     CreateServiceDetailsCommand
 } from "src/authorization/infrastructure/commands/create-service-details/create-service-details.command";
+import { AuthGuard } from "src/common/guards/auth.guard";
 
 @Controller("service-details")
 export class ServiceDetailsController {
@@ -17,6 +18,7 @@ export class ServiceDetailsController {
     @ApiBearerAuth()
     @ApiBody({ type: CreateServiceDetailsDto })
     @ApiResponse({ status: 201, type: ServiceDetails })
+    @UseGuards(AuthGuard)
     @Post()
     async createServiceDetails(
         @UserId() userId: string,
