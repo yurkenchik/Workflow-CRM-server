@@ -32,21 +32,34 @@ import {
 import {
     CreateServiceDetailsCommandHandler
 } from "src/authorization/infrastructure/commands/create-service-details/create-service.details.command.handler";
+import { GetUserQueryHandler } from "src/authorization/infrastructure/queries/get-user/get-user.query.handler";
+
+const services = [
+    AuthorizationService,
+    TokenService,
+    ConfirmationCodeService,
+    AuthorizationUserService,
+    ServiceDetailsService,
+]
+
+const commandHandlers = [
+    RegistrationCommandHandler,
+    LoginCommandHandler,
+    LogOutCommandHandler,
+    ConfirmRegistrationCommandHandler,
+    ConfirmLoginCommandHandler,
+    CreateServiceDetailsCommandHandler
+]
+
+const queryHandlers = [
+    GetUserQueryHandler
+]
 
 @Module({
     providers: [
-        AuthorizationService,
-        TokenService,
-        ConfirmationCodeService,
-        AuthorizationUserService,
-        ServiceDetailsService,
-
-        RegistrationCommandHandler,
-        LoginCommandHandler,
-        LogOutCommandHandler,
-        ConfirmRegistrationCommandHandler,
-        ConfirmLoginCommandHandler,
-        CreateServiceDetailsCommandHandler
+        ...services,
+        ...commandHandlers,
+        ...queryHandlers,
     ],
     controllers: [AuthorizationController, ServiceDetailsController],
     imports: [

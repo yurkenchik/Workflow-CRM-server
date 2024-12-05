@@ -9,7 +9,6 @@ import {
 } from "@mikro-orm/core";
 import { v4 as uuid } from "uuid";
 import { Member } from "../../../project/domain/entities/member.entity";
-import { ServiceDetails } from "./service-details.entity";
 import {ApiProperty} from "@nestjs/swagger";
 
 @Entity()

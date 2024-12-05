@@ -8,6 +8,8 @@ import { ServiceDetails } from "src/authorization/domain/entities/service-detail
 import { UserNotFoundException } from "src/common/exceptions/400-client/404/user-not-found.exception";
 import { GenerateConfirmationCodeDto } from "src/authorization/domain/dto/generate-confirmation-code.dto";
 import { ConfirmationCode } from "src/authorization/domain/entities/confirmation-code.entity";
+import { CreateServiceDetailsDto } from "src/authorization/domain/dto/create-service-details.dto";
+import { v4 as uuid } from "uuid";
 
 export class AuthorizationAggregate {
     private readonly users: Array<User>;
@@ -16,7 +18,7 @@ export class AuthorizationAggregate {
         return this.users.find(user => user.id === userId);
     }
 
-     createUser(createUserDto: CreateUserDto, hashedPassword: string): User {
+    createUser(createUserDto: CreateUserDto, hashedPassword: string): User {
         const { email, phoneNumber } = createUserDto;
         const newUser = new User();
 
@@ -28,6 +30,20 @@ export class AuthorizationAggregate {
         newUser.password = hashedPassword;
 
         return newUser;
+    }
+
+    createServiceDetails(user: User, createServiceDetailsDto: CreateServiceDetailsDto): ServiceDetails {
+        const newServiceDetails = new ServiceDetails();
+
+        newServiceDetails.id = uuid();
+        newServiceDetails.user = user;
+        newServiceDetails.personBestDescriptor = createServiceDetailsDto.personBestDescriptor;
+        newServiceDetails.usagePurpose = createServiceDetailsDto.usagePurpose;
+        newServiceDetails.businessDirection = createServiceDetailsDto.businessDirection;
+        newServiceDetails.teamPeopleRange = createServiceDetailsDto.teamPeopleRange;
+        newServiceDetails.companyName = createServiceDetailsDto.companyName;
+
+        return newServiceDetails;
     }
 
     updateUser(user: User, updateUserDto: UpdateUserDto): User {
