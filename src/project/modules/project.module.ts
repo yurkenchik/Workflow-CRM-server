@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
 import { MikroOrmModule} from "@mikro-orm/nestjs";
 
-import { ProjectService } from "src/project/infrastrcuture/services/project.service";
+import { ProjectService } from "src/project/infrastructure/services/project.service";
 import { UserSharedModule } from "src/authorization/modules/user-shared.module";
 import { Project } from "src/project/domain/entities/project.entity";
 import { Member } from "src/project/domain/entities/member.entity";
