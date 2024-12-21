@@ -18,6 +18,9 @@ import {
 import {
     VerifyConfirmationCodeCommandHandler
 } from "src/authorization/infrastructure/commands/verify-confirmation-code/verify-confirmation-code.command.handler";
+import {
+    RefreshTokenCommandHandler
+} from "src/authorization/infrastructure/commands/refresh-token/refresh-token.command.handler";
 
 export const authServices = [
     AuthorizationService,
@@ -33,4 +36,5 @@ export const authCommandHandlers = [
     ConfirmLoginCommandHandler,
     CreateServiceDetailsCommandHandler,
     VerifyConfirmationCodeCommandHandler,
+    RefreshTokenCommandHandler,
 ];

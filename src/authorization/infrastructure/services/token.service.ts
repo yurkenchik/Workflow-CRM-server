@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 
@@ -6,7 +6,7 @@ import { AuthorizationUserService } from "src/authorization/infrastructure/servi
 
 import { User } from "src/authorization/domain/entities/user.entity";
 import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
-
+import { RefreshTokenDto } from "src/authorization/domain/dto/refresh-token.dto";
 
 @Injectable()
 export class TokenService {
@@ -32,8 +32,16 @@ export class TokenService {
         return { accessToken, refreshToken };
     }
 
-    async refreshToken(userId: string): Promise<AuthorizationResponseDto> {
-        const user = await this.userService.getUserById(userId);
+    async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<AuthorizationResponseDto> {
+        let decoded: User;
+
+        try {
+            decoded = this.jwtService.decode(refreshTokenDto.refreshToken);
+        } catch (error) {
+            throw new UnauthorizedException("Invalid or expired refresh token");
+        }
+
+        const user = await this.userService.getUserById(decoded.id);
         const { accessToken, refreshToken } = await this.generateTokens(user);
 
         user.refreshToken = refreshToken;

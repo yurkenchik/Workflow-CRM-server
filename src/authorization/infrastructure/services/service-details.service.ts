@@ -44,7 +44,7 @@ export class ServiceDetailsService {
         userId: string,
         createServiceDetailsDto: CreateServiceDetailsDto
     ): Promise<ServiceDetails> {
-        const user = await this.userService.getUserById(userId);
+        const user = await this.userService.getUserBy({ field: "id", value: userId });
         const serviceDetailsBuilder = this.authorizationAggregate.createServiceDetails(user, createServiceDetailsDto);
 
         const serviceDetailsInsertResult = await this.serviceDetailsRepository

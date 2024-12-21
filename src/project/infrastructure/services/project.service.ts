@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectRepository } from "@mikro-orm/nestjs";
 import { EntityRepository } from "@mikro-orm/postgresql";
 
@@ -9,6 +9,9 @@ import { ProjectNotFoundException } from "src/common/exceptions/400-client/404/p
 import { ProjectAggregate } from "src/project/domain/aggregate/project.aggregate";
 import { UpdateProjectDto } from "src/project/domain/dto/update-project.dto";
 import { SearchFieldOptionsDto } from "src/common/dto/search-field-options.dto";
+import {
+    ProjectByNameAlreadyExistsException
+} from "src/common/exceptions/400-client/400/project-by-name-already-exists.exception";
 
 @Injectable()
 export class ProjectService extends ProjectRepository {
@@ -54,15 +57,22 @@ export class ProjectService extends ProjectRepository {
     }
 
     async createProject(createProjectDto: CreateProjectDto): Promise<Project> {
-        const projectPayload = this.projectAggregate.createProject(createProjectDto);
+        try {
+            const projectPayload = this.projectAggregate.createProject(createProjectDto);
 
-        const projectInsertResult = await this.projectRepository
-            .createQueryBuilder()
-            .insert(projectPayload)
-            .returning("id")
-            .execute();
+            const projectInsertResult = await this.projectRepository
+                .createQueryBuilder()
+                .insert(projectPayload)
+                .returning("id")
+                .execute();
 
-        return this.getProjectById(projectInsertResult.insertId);
+            return this.getProjectById(projectInsertResult.insertId);
+        } catch (error) {
+            if (error.code === "23505") {
+                throw new ProjectByNameAlreadyExistsException();
+            }
+            throw new InternalServerErrorException();
+        }
     }
 
     async updateProject(updateProjectDto: UpdateProjectDto): Promise<Project> {

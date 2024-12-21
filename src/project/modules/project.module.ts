@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { CqrsModule } from "@nestjs/cqrs";
+import { JwtModule } from "@nestjs/jwt";
+import { ConfigModule } from "@nestjs/config";
 import { MikroOrmModule} from "@mikro-orm/nestjs";
 
 import { ProjectService } from "src/project/infrastructure/services/project.service";
@@ -18,7 +20,9 @@ import { ProjectController } from "src/project/presentation/project.controller";
     imports: [
         UserSharedModule,
         CqrsModule,
-        MikroOrmModule.forFeature({ entities: [Project, Member, Task] })
+        MikroOrmModule.forFeature({ entities: [Project, Member, Task] }),
+        JwtModule,
+        ConfigModule
     ],
     providers: [ ...projectServices, ...projectCommandHandlers,...projectQueryHandlers ],
     controllers: [ProjectController],

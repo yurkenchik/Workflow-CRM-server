@@ -15,13 +15,11 @@ export class AuthGuard implements CanActivate {
 
         try {
             const authorizationHeader = request.headers.authorization;
-
             if (!authorizationHeader) {
                 throw new UnauthorizedException("Authorization header missing");
             }
 
             const [bearer, token] = authorizationHeader.split(" ");
-
             if (!token || bearer !== "Bearer") {
                 throw new UnauthorizedException("Invalid authorization format");
             }
@@ -33,13 +31,13 @@ export class AuthGuard implements CanActivate {
                 ? this.configService.get<string>("JWT_ACCESS_TOKEN_SECRET")
                 : this.configService.get<string>("JWT_REFRESH_TOKEN_SECRET");
 
-            const extractedUserFromToken = this.jwtService.verify(token, { secret: secretKey });
+            const extractedUserFromToken = this.jwtService.decode(token);
             console.log("extracted user from token", extractedUserFromToken);
 
             request.user = extractedUserFromToken;
             return true;
         } catch (error) {
-            throw new UnauthorizedException("Invalid or expired token");
+            throw new UnauthorizedException(error.message);
         }
     }
 

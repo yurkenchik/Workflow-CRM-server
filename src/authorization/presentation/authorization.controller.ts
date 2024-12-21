@@ -15,6 +15,8 @@ import { LoginDto } from "src/authorization/domain/dto/login.dto";
 import { ConfirmAuthorizationDto } from "src/authorization/domain/dto/confirm-authorization.dto";
 import { AuthorizationResponseDto } from "src/authorization/domain/dto/authorization-response.dto";
 import { UserId } from "src/common/decorators/user-id.decorator";
+import { RefreshTokenCommand } from "src/authorization/infrastructure/commands/refresh-token/refresh-token.command";
+import { RefreshTokenDto } from "src/authorization/domain/dto/refresh-token.dto";
 
 @ApiTags('Authorization')
 @Controller('auth')
@@ -58,5 +60,14 @@ export class AuthorizationController {
     @Delete("logout")
     async logout(@UserId() userId: string): Promise<void> {
         return this.commandBus.execute(new LogOutCommand(userId));
+    }
+
+    @ApiOperation({ summary: 'Refreshing token' })
+    @ApiBearerAuth()
+    @ApiBody({ type: RefreshTokenDto })
+    @ApiResponse({ status: 201, type: AuthorizationResponseDto })
+    @Post("refresh-token")
+    async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<AuthorizationResponseDto> {
+        return this.commandBus.execute(new RefreshTokenCommand(refreshTokenDto));
     }
 }
